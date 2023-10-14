@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1038566709787",
+    "project_id": "android-project-d7ebc",
+    "storage_bucket": "android-project-d7ebc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038566709787:android:72f8b7938c233168ea76be",
+        "android_client_info": {
+          "package_name": "com.example.alarmingmobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByJxhlsrQVPqehivCgFlgErDR6hBAELEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038566709787:android:ff27b59f0f2483c4ea76be",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByJxhlsrQVPqehivCgFlgErDR6hBAELEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
