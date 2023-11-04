@@ -1,22 +1,21 @@
 package com.example.alarmingmobileapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.alarmingmobileapp.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
-    View mapsFragment;
-    ItemFragment itemFragment;
 
 
 
@@ -28,10 +27,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         replaceFragment(new MapsFragment());
         binding.bottomNavMenu.setBackground(null);
-        mapsFragment = findViewById(R.id.map);
         binding.bottomNavMenu.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.home) {
+            if (itemId == R.id.map) {
                 replaceFragment(new MapsFragment());
             }
             if(itemId==R.id.list){
@@ -42,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
     }
     private  void replaceFragment (Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = ((FragmentManager) fragmentManager).beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame, fragment);
         transaction.commit();
     }
+
 }
