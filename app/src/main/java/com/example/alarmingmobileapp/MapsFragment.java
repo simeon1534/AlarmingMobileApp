@@ -14,9 +14,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MapsFragment extends Fragment {
+
+    private Marker clickedMarker;
+    private boolean isMarkerVisible = false;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -32,8 +37,24 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    // Remove the previous clicked marker (if any)
+                    if (clickedMarker != null) {
+                        clickedMarker.remove();
+                    }
+
+                    clickedMarker = googleMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title("Clicked Location"));
+                    isMarkerVisible=true;
+                    showFlutterButton();
+
+                }
+
+            });
         }
     };
 
@@ -54,4 +75,14 @@ public class MapsFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
     }
+
+    private void showFlutterButton() {
+        FloatingActionButton flutterButton = getView().findViewById(R.id.addBtn);
+        if (flutterButton != null) {
+            flutterButton.setVisibility(View.VISIBLE);
+        }else {
+            flutterButton.setVisibility(View.GONE);
+        }
+    }
+
 }
