@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AlarmingMobileApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD7pN1nEg_BmzjqQ5I1a3Ot0SC1zvlsYyE">
+        </meta-data>
         <activity
             android:name=".Register"
             android:exported="false" />
