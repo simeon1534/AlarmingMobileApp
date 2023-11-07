@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +24,9 @@ public class MapsFragment extends Fragment {
 
     private Marker clickedMarker;
     private boolean isMarkerVisible = false;
+    private Button addMarkerButton;
+    private OnAddMarkerButtonClickListener buttonClickListener;
+
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -35,7 +41,7 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(-34, 151);
+            LatLng sydney = new LatLng(43, 27);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
@@ -48,8 +54,21 @@ public class MapsFragment extends Fragment {
                     clickedMarker = googleMap.addMarker(new MarkerOptions()
                             .position(latLng)
                             .title("Clicked Location"));
-                    isMarkerVisible=true;
-
+                    addMarkerButton.setVisibility(View.VISIBLE);
+                    addMarkerButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Fragment addMarkerFr=new AddMarker();
+                            Bundle args=new Bundle();
+                            args.putParcelable("cordinates",latLng);
+                            addMarkerFr.setArguments(args);
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.frame, addMarkerFr);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+                        }
+                    });
                 }
 
             });
@@ -61,7 +80,9 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_maps, container, false);
+        addMarkerButton = rootView.findViewById(R.id.addMarkerBtn);
+        return rootView;
     }
 
     @Override
@@ -74,6 +95,8 @@ public class MapsFragment extends Fragment {
         }
     }
 
-
+    public interface OnAddMarkerButtonClickListener {
+        void onAddMarkerButtonClick(LatLng coordinates);
+    }
 
 }
