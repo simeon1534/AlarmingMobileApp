@@ -1,13 +1,13 @@
 package com.example.alarmingmobileapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,7 +16,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MapsFragment extends Fragment {
 
@@ -50,7 +49,6 @@ public class MapsFragment extends Fragment {
                             .position(latLng)
                             .title("Clicked Location"));
                     isMarkerVisible=true;
-                    showFlutterButton();
 
                 }
 
@@ -76,13 +74,6 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private void showFlutterButton() {
-        FloatingActionButton flutterButton = getView().findViewById(R.id.addBtn);
-        if (flutterButton != null) {
-            flutterButton.setVisibility(View.VISIBLE);
-        }else {
-            flutterButton.setVisibility(View.GONE);
-        }
-    }
+
 
 }
