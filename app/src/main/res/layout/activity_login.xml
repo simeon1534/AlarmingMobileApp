@@ -12,7 +12,10 @@
         android:id="@+id/app_logo"
         android:layout_width="120dp"
         android:layout_height="120dp"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2bc5d414721658d1d7f49bdbe537e7a08c87d036
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
