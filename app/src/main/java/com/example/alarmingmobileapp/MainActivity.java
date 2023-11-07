@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new MapsFragment());
             }
             if(itemId==R.id.list){
-                replaceFragment((new ItemFragment()));
+                replaceFragment((new ListMarkers()));
             }
             if(itemId==R.id.logout){
                 FirebaseAuth.getInstance().signOut();
