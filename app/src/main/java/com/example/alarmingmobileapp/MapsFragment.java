@@ -1,14 +1,23 @@
 package com.example.alarmingmobileapp;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,21 +35,15 @@ public class MapsFragment extends Fragment {
     private boolean isMarkerVisible = false;
     private Button addMarkerButton;
     private OnAddMarkerButtonClickListener buttonClickListener;
+    private GoogleMap map;
+    Toolbar toolbar;
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
-
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
+        
         @Override
         public void onMapReady(GoogleMap googleMap) {
+            map=googleMap;
             LatLng sydney = new LatLng(43, 27);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -82,17 +85,44 @@ public class MapsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_maps, container, false);
         addMarkerButton = rootView.findViewById(R.id.addMarkerBtn);
+        toolbar=rootView.findViewById(R.id.toolbar);
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
+        setToolbar(toolbar);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+    private void setToolbar(Toolbar toolbar) {
+        FragmentActivity activity = getActivity();
+        if (activity instanceof AppCompatActivity) {
+            ((AppCompatActivity) activity).setSupportActionBar(toolbar);
+        }
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.map_layouts_menu,menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id= item.getItemId();
+        if(id==R.id.normal){
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
+        if(id==R.id.satellite){
+            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        }
+        return true;
+
     }
 
     public interface OnAddMarkerButtonClickListener {
