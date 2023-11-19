@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,29 +103,34 @@ public class AddMarker extends Fragment {
         addMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MarkerModel marker=new MarkerModel();
-                marker.setLatitude(String.valueOf(latitude));
-                marker.setLongtitude(String.valueOf(longtitude));
-                marker.setName(name.getText().toString());
-                marker.setRadius(Integer.valueOf(radius.getText().toString()));
-                db.getReference().child("markers").child(userId).push().setValue(marker).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Fragment mapFragment=new MapsFragment();
-                        Toast.makeText(getActivity(),"Data uploaded",Toast.LENGTH_SHORT).show();
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.frame, mapFragment);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(),"Data was not uploaded",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                String nameText=name.getText().toString();
+                String radiusText= String.valueOf(radius);
+                if(TextUtils.isEmpty(radiusText)||TextUtils.isEmpty(nameText)) {
+                    Toast.makeText(getActivity(), "Please enter radius and name", Toast.LENGTH_SHORT).show();
+                }
+                    MarkerModel marker = new MarkerModel();
+                    marker.setLatitude(Double.valueOf(String.valueOf(latitude)));
+                    marker.setLongtitude(Double.valueOf(String.valueOf(longtitude)));
+                    marker.setName(name.getText().toString());
+                    marker.setRadius(Integer.valueOf(radius.getText().toString()));
+                    db.getReference().child("markers").child(userId).push().setValue(marker).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Fragment mapFragment = new MapsFragment();
+                            Toast.makeText(getActivity(), "Data uploaded", Toast.LENGTH_SHORT).show();
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.frame, mapFragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Data was not uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
         });
         goBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override

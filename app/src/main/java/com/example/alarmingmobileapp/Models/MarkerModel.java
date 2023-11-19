@@ -1,32 +1,34 @@
 package com.example.alarmingmobileapp.Models;
 
 public class MarkerModel {
-    String latitude,longtitude,name;
+
+    Double latitude;
+    Double longtitude;
+    String name;
     Integer radius;
 
     public MarkerModel(){}
 
-
-    public MarkerModel(String latitude, String longtitude, Integer radius, String name) {
+    public MarkerModel(Double latitude, Double longtitude, String name, Integer radius) {
         this.latitude = latitude;
         this.longtitude = longtitude;
-        this.radius = radius;
         this.name = name;
+        this.radius = radius;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongtitude() {
+    public Double getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(String longtitude) {
+    public void setLongtitude(Double longtitude) {
         this.longtitude = longtitude;
     }
 
