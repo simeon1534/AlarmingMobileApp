@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
+        String username=currentUser.getDisplayName();
+        Toast.makeText(MainActivity.this, "Authentication successful " +username, Toast.LENGTH_SHORT).show();
         if (currentUser == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);

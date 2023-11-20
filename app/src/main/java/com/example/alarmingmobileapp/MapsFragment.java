@@ -65,8 +65,6 @@ public class MapsFragment extends Fragment {
     private Button addMarkerButton;
     private OnAddMarkerButtonClickListener buttonClickListener;
     private GoogleMap map;
-    private Map<String, Marker> mapMarkers = new HashMap<>();
-    private Map<String, Circle> mapCircles = new HashMap<>();
 
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = auth.getCurrentUser();
@@ -104,8 +102,6 @@ public class MapsFragment extends Fragment {
                                 .strokeColor(Color.BLACK)
                                 .fillColor(Color.parseColor("#25FFFF00"));
                         Circle circle=map.addCircle(circleOptions);
-                        mapMarkers.put(dataSnapshot.getKey(), marker);
-                        mapCircles.put(dataSnapshot.getKey(), circle);
                     }
                 }
                 @Override
@@ -114,43 +110,7 @@ public class MapsFragment extends Fragment {
                 }
             });
 
-            dbRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    String commentKey = snapshot.getKey();
-                    Marker deletedMarker=mapMarkers.get(commentKey);
-                    if(deletedMarker!=null){
-                        deletedMarker.remove();
-                        mapMarkers.remove(commentKey);
-                    }
-                    Circle removeCircle=mapCircles.get(commentKey);
-                    if(removeCircle!=null){
-                        removeCircle.remove();
-                        mapCircles.remove(commentKey);
-                    }
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
