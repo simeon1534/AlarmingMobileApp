@@ -3,6 +3,7 @@ package com.example.alarmingmobileapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,11 +12,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.alarmingmobileapp.databinding.ActivityMainBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser currentUser;
     FirebaseAuth auth;
+
+    public LocationRequest locationRequest;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    public static final int LOCATION_PERM_CODE = 1001;
+
 
 
 
@@ -77,5 +87,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame, fragment);
         transaction.commit();
     }
+
 
 }
