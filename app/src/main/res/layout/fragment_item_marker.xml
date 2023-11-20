@@ -6,10 +6,17 @@
     android:padding="16dp">
 
     <!-- Add any views or UI elements you need -->
-    <ListView
-        android:id="@+id/listViewMarkers"
+    <TextView
+        android:id="@+id/textViewMarkerName"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="18sp" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/delete_btn"/>
 
     <!-- Other views can be added here -->
 </LinearLayout>

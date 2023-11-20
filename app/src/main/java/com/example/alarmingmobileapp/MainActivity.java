@@ -37,11 +37,6 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser currentUser;
     FirebaseAuth auth;
 
-    public LocationRequest locationRequest;
-
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    public static final int LOCATION_PERM_CODE = 1001;
-
 
 
 
