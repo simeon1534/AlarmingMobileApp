@@ -15,11 +15,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
 
 import java.util.List;
+import java.util.TooManyListenersException;
 
 
 public class ListMarkers extends Fragment {
@@ -30,6 +33,13 @@ public class ListMarkers extends Fragment {
     private ListView listViewMarkers;
 
     private ArrayAdapter<String> adapter;
+
+    String markerData;
+
+    DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
+    List<MarkerModel> markers=markerDao.getAllData();
+
+    TextView message;
 
 
     @Override
@@ -43,18 +53,11 @@ public class ListMarkers extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list_markers, container, false);
         listViewMarkers = rootView.findViewById(R.id.listViewMarkers);
+        message=rootView.findViewById(R.id.text_msg);
+        listViewMarkers.setLongClickable(true);
         adapter = new ArrayAdapter<>(requireContext(), R.layout.fragment_item_marker, R.id.textViewMarkerName);
         listViewMarkers.setAdapter(adapter);
-        DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
-        List<MarkerModel> markers=markerDao.getAllData();
-        for (MarkerModel marker:markers){
-            String markerName="Marker name: "+marker.getName();
-            String cordinates="Cordinates: "+marker.getLatitude()+", "+marker.getLongtitude();
-            String markerRadius="Marker Radius: " +String.valueOf(marker.getRadius());
-            String markerData=markerName+ "\n" +markerRadius+ "\n"+cordinates;
-            adapter.add(markerData);
-            adapter.notifyDataSetChanged();
-        }
+        loadData();
 
 
         listViewMarkers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -64,8 +67,10 @@ public class ListMarkers extends Fragment {
                 if (index>=0 && index<markers.size()){
                     MarkerModel removeMarker=markers.get(index);
                     markers.remove(index);
-                    adapter.notifyDataSetChanged();
+                    adapter.clear();
                     DBClass.getDatabase(getActivity().getApplicationContext()).getDao().deleteMarker(removeMarker);
+                    Toast.makeText(requireContext(),"Marker successfully removed!",Toast.LENGTH_SHORT).show();
+                    loadData();
                 }
 
                 return true;
@@ -74,6 +79,21 @@ public class ListMarkers extends Fragment {
 
 
         return rootView;
+    }
+
+    private void loadData(){
+        for (MarkerModel marker:markers){
+            String markerName="Marker name: "+marker.getName();
+            String cordinates="Cordinates: "+marker.getLatitude()+", "+marker.getLongtitude();
+            String markerRadius="Marker Radius: " +String.valueOf(marker.getRadius());
+            markerData=markerName+ "\n" +markerRadius+ "\n"+cordinates;
+            adapter.add(markerData);
+            adapter.notifyDataSetChanged();
+        }
+        if(markers.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }
+
     }
 
 }

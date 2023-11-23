@@ -8,10 +8,20 @@
     android:padding="16dp">
 
     <!-- Add any views or UI elements you need -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/text_msg"
+        android:text="Your markers list is empty! Add some to see them here"/>
     <ListView
         android:id="@+id/listViewMarkers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:longClickable="true"
+        />
+
 
     <!-- Other views can be added here -->
 </LinearLayout>

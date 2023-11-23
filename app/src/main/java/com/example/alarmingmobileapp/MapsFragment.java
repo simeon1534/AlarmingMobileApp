@@ -32,10 +32,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -45,23 +41,10 @@ public class MapsFragment extends Fragment {
     private Marker clickedMarker;
     private boolean isMarkerVisible = false;
     private Button addMarkerButton;
-    private OnAddMarkerButtonClickListener buttonClickListener;
     private GoogleMap map;
-
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-    FirebaseUser currentUser = auth.getCurrentUser();
-
-    String userId=currentUser.getUid();
     Toolbar toolbar;
 
-    SupportMapFragment supportMapFragment;
-    FusedLocationProviderClient fusedLocationProviderClient;
 
-
-    private int FINE_PERMISSION_CODE=1;
-
-    FirebaseDatabase db = FirebaseDatabase.getInstance("https://android-project-d7ebc-default-rtdb.europe-west1.firebasedatabase.app");
-    DatabaseReference dbRef=db.getReference().child("markers").child(userId);
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -145,6 +128,7 @@ public class MapsFragment extends Fragment {
 
     }
 
+
     private void setToolbar(Toolbar toolbar) {
         FragmentActivity activity = getActivity();
         if (activity instanceof AppCompatActivity) {
@@ -170,8 +154,5 @@ public class MapsFragment extends Fragment {
 
     }
 
-    public interface OnAddMarkerButtonClickListener {
-        void onAddMarkerButtonClick(LatLng coordinates);
-    }
 
 }

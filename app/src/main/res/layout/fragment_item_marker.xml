@@ -12,6 +12,11 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="18sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="Hold to delete the marker"/>
 
     <!-- Other views can be added here -->
 </LinearLayout>
