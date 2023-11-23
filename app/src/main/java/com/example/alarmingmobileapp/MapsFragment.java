@@ -39,7 +39,6 @@ import java.util.List;
 public class MapsFragment extends Fragment {
 
     private Marker clickedMarker;
-    private boolean isMarkerVisible = false;
     private Button addMarkerButton;
     private GoogleMap map;
     Toolbar toolbar;
@@ -81,14 +80,33 @@ public class MapsFragment extends Fragment {
 
                     clickedMarker = googleMap.addMarker(new MarkerOptions()
                             .position(latLng)
-                            .title("Clicked Location"));
+                            .title("Clicked Location")
+                            .draggable(true));
+                    map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                        @Override
+                        public void onMarkerDrag(@NonNull Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDragEnd(@NonNull Marker marker) {
+                            LatLng cords = marker.getPosition();
+                            clickedMarker.setPosition(cords);
+                        }
+
+
+                        @Override
+                        public void onMarkerDragStart(@NonNull Marker clickedMarker) {
+
+                        }
+                    });
                     addMarkerButton.setVisibility(View.VISIBLE);
                     addMarkerButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Fragment addMarkerFr=new AddMarker();
                             Bundle args=new Bundle();
-                            args.putParcelable("cordinates",latLng);
+                            args.putParcelable("cordinates",clickedMarker.getPosition());
                             addMarkerFr.setArguments(args);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
