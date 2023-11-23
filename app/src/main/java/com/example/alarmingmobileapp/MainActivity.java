@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.alarmingmobileapp.databinding.ActivityMainBinding;
@@ -21,13 +22,19 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser currentUser;
     FirebaseAuth auth;
-
-
+    SupportMapFragment supportMapFragment;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
     @Override
@@ -45,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        String username=currentUser.getDisplayName();
-        Toast.makeText(MainActivity.this, "Authentication successful " +username, Toast.LENGTH_SHORT).show();
+        String username = currentUser.getDisplayName();
+        Toast.makeText(MainActivity.this, "Authentication successful " + username, Toast.LENGTH_SHORT).show();
         if (currentUser == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
@@ -75,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private  void replaceFragment (Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame, fragment);

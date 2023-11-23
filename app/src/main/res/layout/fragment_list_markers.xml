@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:tag="markers-list"
+    android:id="@+id/swipeRefreshLayout"
     android:padding="16dp">
 
     <!-- Add any views or UI elements you need -->

@@ -53,7 +53,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("com.google.firebase:firebase-database:20.3.0")
     implementation ("com.firebaseui:firebase-ui-database:7.2.0")
+    implementation ("androidx.room:room-common:2.6.0")
+    implementation ("androidx.room:room-runtime:2.6.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.0")
 }

@@ -2,7 +2,6 @@ package com.example.alarmingmobileapp;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,8 +17,7 @@ import android.widget.Toast;
 
 import com.example.alarmingmobileapp.Models.MarkerModel;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -107,29 +105,10 @@ public class AddMarker extends Fragment {
                 String radiusText= String.valueOf(radius);
                 if(TextUtils.isEmpty(radiusText)||TextUtils.isEmpty(nameText)) {
                     Toast.makeText(getActivity(), "Please enter radius and name", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                    MarkerModel marker = new MarkerModel();
-                    marker.setLatitude(Double.valueOf(String.valueOf(latitude)));
-                    marker.setLongtitude(Double.valueOf(String.valueOf(longtitude)));
-                    marker.setName(name.getText().toString());
-                    marker.setRadius(Integer.valueOf(radius.getText().toString()));
-                    db.getReference().child("markers").child(userId).push().setValue(marker).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Fragment mapFragment = new MapsFragment();
-                            Toast.makeText(getActivity(), "Data uploaded", Toast.LENGTH_SHORT).show();
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame, mapFragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), "Data was not uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                saveMarkerData();
+
                 }
         });
         goBackBtn.setOnClickListener(new View.OnClickListener() {
@@ -145,5 +124,26 @@ public class AddMarker extends Fragment {
         });
 
         return view;
+    }
+
+    private void saveMarkerData(){
+        try {
+            MarkerModel marker = new MarkerModel();
+            marker.setLatitude(Double.valueOf(String.valueOf(latitude)));
+            marker.setLongtitude(Double.valueOf(String.valueOf(longtitude)));
+            marker.setName(name.getText().toString());
+            marker.setRadius(Integer.valueOf(radius.getText().toString()));
+            DBClass.getDatabase(getActivity().getApplicationContext()).getDao().insertAllData(marker);
+            Toast.makeText(getActivity(), "Data inserted", Toast.LENGTH_SHORT).show();
+            Fragment mapFragment=new MapsFragment();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame, mapFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+        catch (Error e){
+            Toast.makeText(getActivity(),"Error: "+ e,Toast.LENGTH_SHORT).show();
+        }
     }
 }

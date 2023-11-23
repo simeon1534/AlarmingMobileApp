@@ -1,13 +1,7 @@
 package com.example.alarmingmobileapp;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,24 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.databinding.adapters.ViewGroupBindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,17 +34,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 
 public class MapsFragment extends Fragment {
@@ -72,6 +54,9 @@ public class MapsFragment extends Fragment {
     String userId=currentUser.getUid();
     Toolbar toolbar;
 
+    SupportMapFragment supportMapFragment;
+    FusedLocationProviderClient fusedLocationProviderClient;
+
 
     private int FINE_PERMISSION_CODE=1;
 
@@ -86,30 +71,22 @@ public class MapsFragment extends Fragment {
             map = googleMap;
             LatLng sydney = new LatLng(43, 27);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        MarkerModel markerModel=dataSnapshot.getValue(MarkerModel.class);
-                        LatLng latLng=new LatLng(markerModel.getLatitude(),markerModel.getLongtitude());
-                        MarkerOptions markerOptions=new MarkerOptions();
-                        markerOptions.position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(markerModel.getName());
-                        Marker marker = map.addMarker(markerOptions);
-                        CircleOptions circleOptions = new CircleOptions();
-                        circleOptions.center(latLng)
-                                .radius(markerModel.getRadius())
-                                .strokeWidth(1)
-                                .strokeColor(Color.BLACK)
-                                .fillColor(Color.parseColor("#25FFFF00"));
-                        Circle circle=map.addCircle(circleOptions);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(getActivity(),"There was an error fetching your data! Please try uploading markers",Toast.LENGTH_SHORT).show();
-                }
-            });
+            DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
+            List<MarkerModel> markers=markerDao.getAllData();
+            for (MarkerModel marker:markers){
+                LatLng latLng=new LatLng(marker.getLatitude(),marker.getLongtitude());
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(marker.getName());
+                Marker googleMarker = googleMap.addMarker(markerOptions);
 
+                CircleOptions circleOptions = new CircleOptions();
+                circleOptions.center(latLng)
+                        .radius(marker.getRadius())
+                        .strokeWidth(1)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.parseColor("#25FFFF00"));
+                Circle circle = googleMap.addCircle(circleOptions);
+            }
 
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override

@@ -1,34 +1,47 @@
 package com.example.alarmingmobileapp.Models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "markers")
 public class MarkerModel {
+    @PrimaryKey(autoGenerate = true)
+    private int key;
 
-    Double latitude;
-    Double longtitude;
-    String name;
-    Integer radius;
+    @ColumnInfo(name="latitude")
+    private double latitude;
 
-    public MarkerModel(){}
+    @ColumnInfo(name="longtitude")
+    private double longtitude;
 
-    public MarkerModel(Double latitude, Double longtitude, String name, Integer radius) {
-        this.latitude = latitude;
-        this.longtitude = longtitude;
-        this.name = name;
-        this.radius = radius;
+    @ColumnInfo(name="name")
+    private String name;
+
+    @ColumnInfo(name ="radius")
+    private int radius;
+
+    public int getKey() {
+        return key;
     }
 
-    public Double getLatitude() {
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongtitude() {
+    public double getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(Double longtitude) {
+    public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }
 
@@ -40,11 +53,11 @@ public class MarkerModel {
         this.name = name;
     }
 
-    public Integer getRadius() {
+    public int getRadius() {
         return radius;
     }
 
-    public void setRadius(Integer radius) {
+    public void setRadius(int radius) {
         this.radius = radius;
     }
 }
