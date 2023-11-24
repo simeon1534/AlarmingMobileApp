@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        startService(new Intent(this,LocationService.class));
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         String username = currentUser.getDisplayName();
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame, fragment);
         transaction.commit();
     }
+
+
 
 
 }

@@ -1,5 +1,9 @@
 package com.example.alarmingmobileapp;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,11 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -22,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,7 +51,7 @@ public class MapsFragment extends Fragment {
     private GoogleMap map;
     Toolbar toolbar;
 
-
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -52,11 +60,19 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
             LatLng sydney = new LatLng(43, 27);
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
+
+            }else{
+                map.setMyLocationEnabled(true);
+            }
+
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
-            List<MarkerModel> markers=markerDao.getAllData();
-            for (MarkerModel marker:markers){
-                LatLng latLng=new LatLng(marker.getLatitude(),marker.getLongtitude());
+            DaoClass markerDao = DBClass.getDatabase(getContext()).getDao();
+            List<MarkerModel> markers = markerDao.getAllData();
+            for (MarkerModel marker : markers) {
+                LatLng latLng = new LatLng(marker.getLatitude(), marker.getLongtitude());
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(marker.getName());
                 Marker googleMarker = googleMap.addMarker(markerOptions);
@@ -104,9 +120,9 @@ public class MapsFragment extends Fragment {
                     addMarkerButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Fragment addMarkerFr=new AddMarker();
-                            Bundle args=new Bundle();
-                            args.putParcelable("cordinates",clickedMarker.getPosition());
+                            Fragment addMarkerFr = new AddMarker();
+                            Bundle args = new Bundle();
+                            args.putParcelable("cordinates", clickedMarker.getPosition());
                             addMarkerFr.setArguments(args);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -126,9 +142,10 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_maps, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         addMarkerButton = rootView.findViewById(R.id.addMarkerBtn);
-        toolbar=rootView.findViewById(R.id.toolbar);
+        toolbar = rootView.findViewById(R.id.toolbar);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
         return rootView;
 
     }
@@ -153,24 +170,25 @@ public class MapsFragment extends Fragment {
             ((AppCompatActivity) activity).setSupportActionBar(toolbar);
         }
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.map_layouts_menu,menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        inflater.inflate(R.menu.map_layouts_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id= item.getItemId();
-        if(id==R.id.normal){
+        int id = item.getItemId();
+        if (id == R.id.normal) {
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
-        if(id==R.id.satellite){
+        if (id == R.id.satellite) {
             map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         }
         return true;
 
     }
-
 
 }

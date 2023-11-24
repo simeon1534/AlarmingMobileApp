@@ -2,10 +2,15 @@ package com.example.alarmingmobileapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +61,11 @@ public class Login extends AppCompatActivity {
         editPassword=findViewById(R.id.password);
         auth=FirebaseAuth.getInstance();
         progressBar=findViewById(R.id.progress_bar);
+        if (ActivityCompat.checkSelfPermission(Login.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(Login.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Login.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
+
+        }
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,9 +86,9 @@ public class Login extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if(task.isSuccessful()){
                                     Toast.makeText(Login.this,"Logged succsefully",Toast.LENGTH_SHORT);
-                                    Intent intent=new Intent(getApplicationContext(),MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                        Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
                                 }
                                 else {
                                     Toast.makeText(Login.this, "Authentication failed. Please check your credentials.", Toast.LENGTH_SHORT).show();
