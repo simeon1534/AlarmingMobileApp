@@ -52,7 +52,7 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startLocationUpdates();
-        updateMarkers();
+        updateMarkersList();
         scheduleMarkerUpdate();
         return START_STICKY;
     }
@@ -118,12 +118,12 @@ public class LocationService extends Service {
             float distance = usrLocation.distanceTo(markerLocation);
 
             if (distance <= marker.getRadius()) {
-                showProximityNotification(marker.getName());
+                sendNotification(marker.getName());
             }
         }
     }
 
-    private void showProximityNotification(String markerName) {
+    private void sendNotification(String markerName) {
         Toast.makeText(this, "V marker si: "+markerName, Toast.LENGTH_SHORT).show();
         Log.d("Loc", "Inside radius fuck you");
     }
@@ -132,16 +132,16 @@ public class LocationService extends Service {
         updateMarkersTask = new Runnable() {
             @Override
             public void run() {
-                updateMarkers(); // Update markers every 5 seconds
+                updateMarkersList();
                 handler.postDelayed(this, 5000);
             }
         };
         handler.postDelayed(updateMarkersTask, 5000);
     }
 
-    private void updateMarkers() {
+    private void updateMarkersList() {
         DaoClass markerDao = DBClass.getDatabase(getApplicationContext()).getDao();
-        List<MarkerModel> markers = markerDao.getAllData(); // Update the list of markers
+        List<MarkerModel> markers = markerDao.getAllData();
     }
 
 
