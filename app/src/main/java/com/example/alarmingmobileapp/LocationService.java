@@ -1,6 +1,10 @@
 package com.example.alarmingmobileapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -41,11 +46,21 @@ public class LocationService extends Service {
     private Handler handler = new Handler();
     private Runnable updateMarkersTask;
 
+    private static final String CHANNEL_ID = "markerNot";
+    private static final int NOTIFICATION_ID = 1;
+
+    private boolean isNotificationSent = false;
+
+
+
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        Log.d("Locman","Service started!");
+        Log.d("Locman", "Service started!");
         createLocationCallback();
     }
 
@@ -118,14 +133,43 @@ public class LocationService extends Service {
             float distance = usrLocation.distanceTo(markerLocation);
 
             if (distance <= marker.getRadius()) {
-                sendNotification(marker.getName());
+                sendNotification(marker.getName(),distance);
+            }else{
+                cancelNotification();
             }
         }
     }
 
-    private void sendNotification(String markerName) {
-        Toast.makeText(this, "V marker si: "+markerName, Toast.LENGTH_SHORT).show();
-        Log.d("Loc", "Inside radius fuck you");
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "markerNot";
+            String description = "urrrr";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void sendNotification(String markerName,float distance) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+            createNotificationChannel();
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.baseline_location_searching_24)
+                    .setContentTitle("You are approaching a marker")
+                    .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+    private void cancelNotification(){
+        NotificationManagerCompat notificationManagerCompat=NotificationManagerCompat.from(this);
+        notificationManagerCompat.cancel(NOTIFICATION_ID);
     }
 
     private void scheduleMarkerUpdate() {
