@@ -62,10 +62,11 @@ public class Login extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
         progressBar=findViewById(R.id.progress_bar);
         if (ActivityCompat.checkSelfPermission(Login.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(Login.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Login.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
+                || ActivityCompat.checkSelfPermission(Login.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(Login.this,Manifest.permission.POST_NOTIFICATIONS)!= PackageManager.PERMISSION_GRANTED|| ActivityCompat.checkSelfPermission(Login.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION)!=PackageManager.PERMISSION_GRANTED)  {
+            ActivityCompat.requestPermissions(Login.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1001);
 
         }
+
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
