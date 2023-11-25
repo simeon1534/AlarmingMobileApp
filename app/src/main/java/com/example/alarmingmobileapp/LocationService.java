@@ -2,11 +2,11 @@ package com.example.alarmingmobileapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,13 +47,12 @@ public class LocationService extends Service {
     private Runnable updateMarkersTask;
 
     private static final String CHANNEL_ID = "markerNot";
-    private static final int NOTIFICATION_ID = 1;
 
-    private boolean isNotificationSent = false;
+    private static final String CHANNEL_ID_START ="start";
 
+    private static final int NOTIFICATION_ID_START = 1;
 
-
-
+    private boolean isInsideAnyMarker = false;
 
 
     @Override
@@ -66,6 +65,13 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        createNotificationChannel();
+        Notification notification = new NotificationCompat.Builder(this,"markerNot")
+                .setSmallIcon(R.drawable.baseline_home_24)
+                .setContentTitle("Application started")
+                .setContentText("You may close this notification ")
+                .build();
+        startForeground(NOTIFICATION_ID_START,notification);
         startLocationUpdates();
         updateMarkersList();
         scheduleMarkerUpdate();
@@ -104,7 +110,9 @@ public class LocationService extends Service {
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
         } else {
             Toast.makeText(getApplicationContext(), "No permissions", Toast.LENGTH_SHORT).show();
@@ -129,16 +137,20 @@ public class LocationService extends Service {
             Location markerLocation = new Location("marker");
             markerLocation.setLatitude(marker.getLatitude());
             markerLocation.setLongitude(marker.getLongtitude());
-
+            int id=marker.getKey();
             float distance = usrLocation.distanceTo(markerLocation);
-
             if (distance <= marker.getRadius()) {
-                sendNotification(marker.getName(),distance);
-            }else{
-                cancelNotification();
+                isInsideAnyMarker = true;
+                sendNotification(marker.getName(), distance, id);
+            }
+            if (!isInsideAnyMarker) {
+                cancelNotification(id);
             }
         }
+
     }
+
+
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -153,7 +165,7 @@ public class LocationService extends Service {
     }
 
     @SuppressLint("MissingPermission")
-    private void sendNotification(String markerName,float distance) {
+    private void sendNotification(String markerName,float distance,int id) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -163,13 +175,15 @@ public class LocationService extends Service {
                     .setContentTitle("You are approaching a marker")
                     .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
                     .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
+            notificationManager.notify(id, builder.build());
     }
-    private void cancelNotification(){
-        NotificationManagerCompat notificationManagerCompat=NotificationManagerCompat.from(this);
-        notificationManagerCompat.cancel(NOTIFICATION_ID);
+
+
+    private void cancelNotification(Integer id){
+        NotificationManagerCompat.from(this).cancel(id);
     }
 
     private void scheduleMarkerUpdate() {

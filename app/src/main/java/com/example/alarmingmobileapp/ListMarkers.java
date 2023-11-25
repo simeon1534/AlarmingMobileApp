@@ -86,7 +86,7 @@ public class ListMarkers extends Fragment {
         for (MarkerModel marker:markers){
             String markerName="Marker name: "+marker.getName();
             String cordinates="Cordinates: "+marker.getLatitude()+", "+marker.getLongtitude();
-            String markerRadius="Marker Radius: " +String.valueOf(marker.getRadius());
+            String markerRadius="Marker Radius: " +String.valueOf(marker.getRadius())+ " meters";
             markerData=markerName+ "\n" +markerRadius+ "\n"+cordinates;
             adapter.add(markerData);
             adapter.notifyDataSetChanged();

@@ -17,10 +17,7 @@ import android.widget.Toast;
 
 import com.example.alarmingmobileapp.Models.MarkerModel;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,13 +41,9 @@ public class AddMarker extends Fragment {
     private Button addMarkerButton;
     private Button goBackBtn;
 
-    FirebaseDatabase db;
     private EditText radius;
     private EditText name;
 
-    FirebaseUser currentUser;
-    FirebaseAuth auth;
-    private String userId;
 
 
 
@@ -71,10 +64,6 @@ public class AddMarker extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = FirebaseDatabase.getInstance("https://android-project-d7ebc-default-rtdb.europe-west1.firebasedatabase.app");
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-        userId=currentUser.getUid();
     }
 
     @Override
