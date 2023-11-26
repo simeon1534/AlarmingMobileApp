@@ -97,7 +97,7 @@ public class LocationService extends Service {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
                 Log.d("LocationService", "Received location update: " + location.toString());
-                checkMarkerProximity(location);
+                checkDistanceFromRadius(location);
             }
         };
     }
@@ -129,7 +129,7 @@ public class LocationService extends Service {
         stopLocationUpdates();
     }
 
-    private void checkMarkerProximity(Location usrLocation) {
+    private void checkDistanceFromRadius(Location usrLocation) {
         DaoClass markerDao = DBClass.getDatabase(getApplicationContext()).getDao();
         List<MarkerModel> markers = markerDao.getAllData();
 
