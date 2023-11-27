@@ -10,7 +10,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -24,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.ServiceCompat;
 
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
@@ -66,8 +69,8 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent locationPermIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        locationPermIntent.setData(android.net.Uri.parse("package:" + getPackageName()));
+        Intent locationPermIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        locationPermIntent.setData(Uri.parse("package:" + getPackageName()));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, locationPermIntent, PendingIntent.FLAG_IMMUTABLE);
         createNotificationChannel();
         Notification notification = new NotificationCompat.Builder(this, "markerNot")
@@ -185,8 +188,7 @@ public class LocationService extends Service {
                 .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setDefaults(NotificationCompat.DEFAULT_ALL);
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(id, builder.build());
     }
