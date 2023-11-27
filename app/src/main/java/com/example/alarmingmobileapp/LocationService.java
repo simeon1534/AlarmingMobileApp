@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,9 +49,9 @@ public class LocationService extends Service {
 
     private static final String CHANNEL_ID = "markerNot";
 
-    private static final String CHANNEL_ID_START ="start";
+    private static final String CHANNEL_ID_START = "start";
 
-    private static final int NOTIFICATION_ID_START = 1;
+    private static final int NOTIFICATION_ID_START = -1;
 
     private boolean isInsideAnyMarker = false;
 
@@ -65,13 +66,18 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent locationPermIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        locationPermIntent.setData(android.net.Uri.parse("package:" + getPackageName()));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, locationPermIntent, PendingIntent.FLAG_IMMUTABLE);
         createNotificationChannel();
-        Notification notification = new NotificationCompat.Builder(this,"markerNot")
+        Notification notification = new NotificationCompat.Builder(this, "markerNot")
                 .setSmallIcon(R.drawable.baseline_home_24)
                 .setContentTitle("Application started")
-                .setContentText("You may close this notification ")
+                .setContentText("For  proper use of the application in background mode,please set the app Location permissions to Allow all time!")
+                .setTimeoutAfter(60000)
+                .addAction(0, "Allow all time location permission", pendingIntent)
                 .build();
-        startForeground(NOTIFICATION_ID_START,notification);
+        startForeground(NOTIFICATION_ID_START, notification);
         startLocationUpdates();
         updateMarkersList();
         scheduleMarkerUpdate();
@@ -111,7 +117,7 @@ public class LocationService extends Service {
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
         } else {
@@ -127,6 +133,8 @@ public class LocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.cancelAll();
     }
 
     private void checkDistanceFromRadius(Location usrLocation) {
@@ -137,7 +145,7 @@ public class LocationService extends Service {
             Location markerLocation = new Location("marker");
             markerLocation.setLatitude(marker.getLatitude());
             markerLocation.setLongitude(marker.getLongtitude());
-            int id=marker.getKey();
+            int id = marker.getKey();
             float distance = usrLocation.distanceTo(markerLocation);
             if (distance <= marker.getRadius()) {
                 isInsideAnyMarker = true;
@@ -151,34 +159,36 @@ public class LocationService extends Service {
     }
 
 
-
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "markerNot";
-            String description = "urrrr";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            String description = "markerNotification";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
     @SuppressLint("MissingPermission")
-    private void sendNotification(String markerName,float distance,int id) {
+    private void sendNotification(String markerName, float distance, int id) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-            createNotificationChannel();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.baseline_location_searching_24)
-                    .setContentTitle("You are approaching a marker")
-                    .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(id, builder.build());
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.baseline_location_searching_24)
+                .setContentTitle("You are approaching a marker")
+                .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(id, builder.build());
     }
 
 
