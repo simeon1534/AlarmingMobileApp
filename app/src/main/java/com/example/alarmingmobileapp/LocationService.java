@@ -36,7 +36,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class LocationService extends Service {
@@ -57,6 +59,12 @@ public class LocationService extends Service {
     private static final int NOTIFICATION_ID_START = -1;
 
     private boolean isInsideAnyMarker = false;
+
+
+
+
+
+
 
 
     @Override
@@ -150,7 +158,7 @@ public class LocationService extends Service {
             markerLocation.setLongitude(marker.getLongtitude());
             int id = marker.getKey();
             float distance = usrLocation.distanceTo(markerLocation);
-            if (distance <= marker.getRadius()) {
+            if (distance <= marker.getRadius()){
                 isInsideAnyMarker = true;
                 sendNotification(marker.getName(), distance, id);
             }
@@ -187,7 +195,7 @@ public class LocationService extends Service {
                 .setContentTitle("You are approaching a marker")
                 .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(id, builder.build());
