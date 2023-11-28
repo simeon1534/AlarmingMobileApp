@@ -82,7 +82,7 @@ public class LocationService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, locationPermIntent, PendingIntent.FLAG_IMMUTABLE);
         createNotificationChannel();
         Notification notification = new NotificationCompat.Builder(this, "markerNot")
-                .setSmallIcon(R.drawable.baseline_home_24)
+                .setSmallIcon(R.drawable.baseline_work_24)
                 .setContentTitle("Application started")
                 .setContentText("For  proper use of the application in background mode,please set the app Location permissions to Allow all time!")
                 .setTimeoutAfter(60000)

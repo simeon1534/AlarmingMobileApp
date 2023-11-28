@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/map"
-        android:title="Home"
-        android:icon="@drawable/baseline_home_24"
+        android:title="Map"
+        android:icon="@drawable/baseline_map_24"
         />
     <item
         android:id="@+id/list"
@@ -12,13 +12,8 @@
         />
 
     <item
-        android:id="@+id/profile"
-        android:title="Profile"
-        android:icon="@drawable/baseline_account_circle_24"
-        />
-    <item
         android:id="@+id/logout"
-        android:title="Log-out"
+        android:title="Exit"
         android:icon="@drawable/baseline_logout_24"
         />
 

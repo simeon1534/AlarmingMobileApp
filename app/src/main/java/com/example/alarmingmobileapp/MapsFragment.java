@@ -1,22 +1,28 @@
 package com.example.alarmingmobileapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -35,11 +41,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 import java.util.List;
 
@@ -47,11 +56,14 @@ import java.util.List;
 public class MapsFragment extends Fragment {
 
     private Marker clickedMarker;
-    private Button addMarkerButton;
     private GoogleMap map;
     Toolbar toolbar;
 
+    FloatingActionButton add_btn;
+
     FusedLocationProviderClient fusedLocationProviderClient;
+
+    View mapView;
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -59,6 +71,7 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
+            mapView=getView();
             LatLng sydney = new LatLng(43, 27);
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -66,6 +79,13 @@ public class MapsFragment extends Fragment {
 
             }else{
                 map.setMyLocationEnabled(true);
+                //map.getUiSettings().setMyLocationButtonEnabled(false);
+            }
+            if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) { //pozicionirane na butona za MyLocation
+                View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+                rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(0,0,30,30);
             }
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -116,8 +136,8 @@ public class MapsFragment extends Fragment {
 
                         }
                     });
-                    addMarkerButton.setVisibility(View.VISIBLE);
-                    addMarkerButton.setOnClickListener(new View.OnClickListener() {
+                    add_btn.show();
+                    add_btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Fragment addMarkerFr = new AddMarker();
@@ -134,7 +154,9 @@ public class MapsFragment extends Fragment {
                 }
 
             });
+
         }
+
     };
 
     @Nullable
@@ -143,7 +165,7 @@ public class MapsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-        addMarkerButton = rootView.findViewById(R.id.addMarkerBtn);
+        add_btn=rootView.findViewById(R.id.add_btn);
         toolbar = rootView.findViewById(R.id.toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
         return rootView;
@@ -168,6 +190,11 @@ public class MapsFragment extends Fragment {
         FragmentActivity activity = getActivity();
         if (activity instanceof AppCompatActivity) {
             ((AppCompatActivity) activity).setSupportActionBar(toolbar);
+            ActionBar actionBar=((AppCompatActivity) activity).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
         }
     }
 
@@ -186,6 +213,9 @@ public class MapsFragment extends Fragment {
         }
         if (id == R.id.satellite) {
             map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        }
+        if(id==R.id.terrain){
+            map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         }
         return true;
 

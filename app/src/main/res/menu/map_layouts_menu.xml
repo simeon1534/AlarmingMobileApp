@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/normal"
-        android:title="Normal"
+        android:icon="@drawable/baseline_map_24"
+        android:title="normal"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/satellite"
-        android:title="Satelite"
+        android:icon="@drawable/baseline_satellite_alt_24"
+        app:showAsAction="always"
+        android:title="satelite"
         />
+    <item
+        android:id="@+id/terrain"
+        android:title="terrain"
+        android:icon="@drawable/baseline_terrain_24"
+        app:showAsAction="always"/>
 
 </menu>

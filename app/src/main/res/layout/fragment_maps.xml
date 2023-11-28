@@ -7,19 +7,24 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     tools:context=".MapsFragment">
 
-    <Button
-        android:id="@+id/addMarkerBtn"
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:text="Add marker"
-        android:visibility="gone" />
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/baseline_add_location_alt_24"
+        android:visibility="gone"
+        />
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:id="@+id/toolbar"
+        android:gravity="right"
         />
+
 
 
 </fragment>
