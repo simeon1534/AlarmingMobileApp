@@ -153,7 +153,7 @@ public class Login extends AppCompatActivity {
                     finish();
                     break;
                 case AppCompatActivity.RESULT_CANCELED:
-                    Toast.makeText(Login.this, "GPS Location is OFF", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, R.string.gps_location_is_off_you_must_turn_it_on, Toast.LENGTH_SHORT).show();
 
             }
         }

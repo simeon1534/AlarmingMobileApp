@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.5"
         app:layout_constraintHorizontal_bias="0.5"
-        android:text="Turn on GPS"
+        android:text="@string/turn_on_gps"
         android:background="#1976D2"
         android:textColor="#FFFFFF"
          />

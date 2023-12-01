@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Location Alarming</string>
     <string name="map">Map</string>
     <string name="list_locations">List locations</string>
     <string name="exit">Exit</string>
-    <string name="marker_name">"Marker name: "</string>
-    <string name="cordinates">"Cordinates: "</string>
-    <string name="marker_radius">"Marker Radius: "</string>
+    <string name="cordinates">"Cordinates"</string>
+    <string name="marker_name">"Marker name"</string>
+    <string name="marker_radius">"Marker Radius"</string>
     <string name="marker_successfully_removed">Marker successfully removed!</string>
     <string name="meters">" meters"</string>
     <string name="data_inserted">Data inserted</string>
@@ -18,7 +19,7 @@
     <string name="you_are_approaching">"You are approaching: "</string>
     <string name="within_distance">" within distance: "</string>
     <string name="application_started">Application started</string>
-    <string name="your_markers_list_is_empty_add_some_to_see_them_here">Your markers list is empty! Add some to see them here</string>
+    <string name="your_markers_list_is_empty_add_some_to_see_them_here">Your markers list is empty! Add some to see them here.</string>
     <string name="gps_location_is_off_you_must_turn_it_on">GPS Location is OFF! You must turn it ON!</string>
     <string name="allow_all_time_location_permission">Allow all time location permission</string>
 </resources>

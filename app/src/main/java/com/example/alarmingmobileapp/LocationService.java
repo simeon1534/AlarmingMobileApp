@@ -83,10 +83,10 @@ public class LocationService extends Service {
         createNotificationChannel();
         Notification notification = new NotificationCompat.Builder(this, "markerNot")
                 .setSmallIcon(R.drawable.baseline_work_24)
-                .setContentTitle("Application started")
+                .setContentTitle(getString(R.string.application_started))
                 .setContentText("For  proper use of the application in background mode,please set the app Location permissions to Allow all time!")
                 .setTimeoutAfter(60000)
-                .addAction(0, "Allow all time location permission", pendingIntent)
+                .addAction(0, getString(R.string.allow_all_time_location_permission), pendingIntent)
                 .build();
         startForeground(NOTIFICATION_ID_START, notification);
         startLocationUpdates();
@@ -192,8 +192,8 @@ public class LocationService extends Service {
         createNotificationChannel();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_location_searching_24)
-                .setContentTitle("You are approaching a marker")
-                .setContentText("You are approaching: " + markerName + " within distance: " + distance + " meters.")
+                .setContentTitle(getString(R.string.you_are_approaching_a_marker))
+                .setContentText(getString(R.string.you_are_approaching) + markerName + getString(R.string.within_distance) + distance + getString(R.string.meters)+".")
                 .setContentIntent(pendingIntent)
                 .setOnlyAlertOnce(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);

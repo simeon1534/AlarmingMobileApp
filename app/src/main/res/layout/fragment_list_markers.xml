@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         android:id="@+id/text_msg"
-        android:text="Your markers list is empty! Add some to see them here"/>
+        android:text="@string/your_markers_list_is_empty_add_some_to_see_them_here"/>
     <ListView
         android:id="@+id/listViewMarkers"
         android:layout_width="match_parent"

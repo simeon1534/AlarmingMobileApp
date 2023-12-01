@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Location Alarming</string>
+    <string name="map">Карта</string>
+    <string name="list_locations">Списък с локации</string>
+    <string name="exit">Изход</string>
+    <string name="cordinates">"Кординати"</string>
+    <string name="marker_name">"Име на локацията"</string>
+    <string name="marker_radius">"Радиус"</string>
+    <string name="marker_successfully_removed">Локацията е премахната успешно!</string>
+    <string name="meters">"метра"</string>
+    <string name="data_inserted">Информацията е записана</string>
+    <string name="turn_on_gps">Включете локацията!</string>
+    <string name="radius_in_meters">Радиус(в метри)</string>
+    <string name="add_marker">Добави локация</string>
+    <string name="go_back_to_map">Върни се към картата</string>
+    <string name="hold_to_delete_the_marker">Задръжте върху локацията, за да я изтриете</string>
+    <string name="you_are_approaching_a_marker">Наближавате локация</string>
+    <string name="you_are_approaching">"Наближавате: "</string>
+    <string name="within_distance">"на разстояние: "</string>
+    <string name="application_started">Приложението е стартирано</string>
+    <string name="your_markers_list_is_empty_add_some_to_see_them_here">Списъкът е празен! Добавете локация, за да я видите тук.</string>
+    <string name="gps_location_is_off_you_must_turn_it_on">Локацията на телефона е ИЗКЛЮЧЕНА! Трябва да бъде ВКЛЮЧЕНА!</string>
+    <string name="allow_all_time_location_permission">Разрешете локацията във всички случаи</string>
+</resources>

@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/map"
-        android:title="Map"
+        android:title="@string/map"
         android:icon="@drawable/baseline_map_24"
         />
     <item
         android:id="@+id/list"
-        android:title="List locations"
+        android:title="@string/list_locations"
         android:icon="@drawable/baseline_view_list_24"
         />
 
     <item
         android:id="@+id/logout"
-        android:title="Exit"
+        android:title="@string/exit"
         android:icon="@drawable/baseline_logout_24"
         />
 

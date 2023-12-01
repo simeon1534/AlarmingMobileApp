@@ -3,6 +3,7 @@ package com.example.alarmingmobileapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -40,13 +41,16 @@ public class ListMarkers extends Fragment {
     DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
     List<MarkerModel> markers=markerDao.getAllData();
 
+
+
     TextView message;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        }
+
+    }
 
 
     @Override
@@ -70,7 +74,7 @@ public class ListMarkers extends Fragment {
                     markers.remove(index);
                     adapter.clear();
                     DBClass.getDatabase(getActivity().getApplicationContext()).getDao().deleteMarker(removeMarker);
-                    Toast.makeText(requireContext(),"Marker successfully removed!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), R.string.marker_successfully_removed,Toast.LENGTH_SHORT).show();
                     loadData();
                 }
 
@@ -84,9 +88,9 @@ public class ListMarkers extends Fragment {
 
     private void loadData(){
         for (MarkerModel marker:markers){
-            String markerName="Marker name: "+marker.getName();
-            String cordinates="Cordinates: "+marker.getLatitude()+", "+marker.getLongtitude();
-            String markerRadius="Marker Radius: " +String.valueOf(marker.getRadius())+ " meters";
+            String markerName=getString(R.string.marker_name)+": "+marker.getName();
+            String cordinates=getString(R.string.cordinates)+": "+marker.getLatitude()+", "+marker.getLongtitude();
+            String markerRadius=getString(R.string.marker_radius)+": " +String.valueOf(marker.getRadius()) +" "+getString(R.string.meters);
             markerData=markerName+ "\n" +markerRadius+ "\n"+cordinates;
             adapter.add(markerData);
             adapter.notifyDataSetChanged();
@@ -96,6 +100,5 @@ public class ListMarkers extends Fragment {
         }
 
     }
-
 
 }

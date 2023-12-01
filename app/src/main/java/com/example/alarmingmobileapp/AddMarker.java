@@ -2,6 +2,7 @@ package com.example.alarmingmobileapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,6 +61,7 @@ public class AddMarker extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,7 +125,7 @@ public class AddMarker extends Fragment {
             marker.setName(name.getText().toString());
             marker.setRadius(Integer.valueOf(radius.getText().toString()));
             DBClass.getDatabase(getActivity().getApplicationContext()).getDao().insertAllData(marker);
-            Toast.makeText(getActivity(), "Data inserted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.data_inserted, Toast.LENGTH_SHORT).show();
             Fragment mapFragment=new MapsFragment();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -1,14 +1,22 @@
 package com.example.alarmingmobileapp;
 
+import static androidx.core.app.ActivityCompat.recreate;
+
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
@@ -51,6 +60,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.util.List;
+import java.util.Locale;
 
 
 public class MapsFragment extends Fragment {
@@ -58,6 +68,7 @@ public class MapsFragment extends Fragment {
     private Marker clickedMarker;
     private GoogleMap map;
     Toolbar toolbar;
+
 
     FloatingActionButton add_btn;
 
@@ -159,6 +170,8 @@ public class MapsFragment extends Fragment {
 
     };
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -168,6 +181,8 @@ public class MapsFragment extends Fragment {
         add_btn=rootView.findViewById(R.id.add_btn);
         toolbar = rootView.findViewById(R.id.toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        loadLocale();
+
         return rootView;
 
     }
@@ -217,8 +232,51 @@ public class MapsFragment extends Fragment {
         if(id==R.id.terrain){
             map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         }
+        if(id==R.id.language){
+            changeLanguage();
+        }
         return true;
 
     }
+    private void changeLanguage(){
+        final String[] langs={"English","Български"};
+        AlertDialog.Builder mBuilder=new AlertDialog.Builder(getActivity());
+        mBuilder.setTitle("Choose language");
+        mBuilder.setSingleChoiceItems(langs, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                if(i==0){
+                    setLocale("en");
+                    getActivity().recreate();
+                }
+                if(i==1){
+                    setLocale("bg");
+                    getActivity().recreate();
+                }
+                dialog.dismiss();
+            }
+        });
+        AlertDialog mDialog= mBuilder.create();
+        mDialog.show();
+    }
+
+    private void setLocale(String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Settings",Context.MODE_PRIVATE).edit();
+        editor.putString("Language", language);
+        editor.apply();
+
+    }
+    public  void loadLocale(){
+        SharedPreferences prefs= getActivity().getSharedPreferences("Settings",Context.MODE_PRIVATE);
+        String language=prefs.getString("Language","");
+        setLocale(language);
+    }
+
 
 }
