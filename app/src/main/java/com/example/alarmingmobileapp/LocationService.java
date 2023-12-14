@@ -9,8 +9,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Binder;
@@ -38,6 +40,7 @@ import com.google.android.gms.location.LocationRequest;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -59,12 +62,6 @@ public class LocationService extends Service {
     private static final int NOTIFICATION_ID_START = -1;
 
     private boolean isInsideAnyMarker = false;
-
-
-
-
-
-
 
 
     @Override
@@ -113,7 +110,7 @@ public class LocationService extends Service {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
-                Log.d("LocationService", "Received location update: " + location.toString());
+                //Log.d("LocationService", "Received location update: " + location.toString());
                 checkDistanceFromRadius(location);
             }
         };

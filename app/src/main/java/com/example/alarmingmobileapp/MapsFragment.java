@@ -5,6 +5,7 @@ import static androidx.core.app.ActivityCompat.recreate;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,8 +16,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -177,11 +180,11 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        loadLocale();
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         add_btn=rootView.findViewById(R.id.add_btn);
         toolbar = rootView.findViewById(R.id.toolbar);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
-        loadLocale();
 
         return rootView;
 
@@ -238,25 +241,26 @@ public class MapsFragment extends Fragment {
         return true;
 
     }
-    private void changeLanguage(){
-        final String[] langs={"English","Български"};
-        AlertDialog.Builder mBuilder=new AlertDialog.Builder(getActivity());
+    private void changeLanguage() {
+        final String[] langs = {"English", "Български"};
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
         mBuilder.setTitle("Choose language");
         mBuilder.setSingleChoiceItems(langs, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                if(i==0){
-                    setLocale("en");
-                    getActivity().recreate();
+                switch (i) {
+                    case 0:
+                        setLocale("en");
+                        break;
+                    case 1:
+                        setLocale("bg");
+                        break;
                 }
-                if(i==1){
-                    setLocale("bg");
-                    getActivity().recreate();
-                }
+                getActivity().recreate();
                 dialog.dismiss();
             }
         });
-        AlertDialog mDialog= mBuilder.create();
+        AlertDialog mDialog = mBuilder.create();
         mDialog.show();
     }
 
@@ -265,16 +269,20 @@ public class MapsFragment extends Fragment {
         Locale.setDefault(locale);
         Configuration config = new Configuration();
         config.locale = locale;
+
         Resources resources = getResources();
+        //getActivity().getApplicationContext().getResources().updateConfiguration(config,getActivity().getApplicationContext().getResources().getDisplayMetrics());
         resources.updateConfiguration(config, resources.getDisplayMetrics());
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Settings",Context.MODE_PRIVATE).edit();
+
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE).edit();
         editor.putString("Language", language);
         editor.apply();
-
     }
-    public  void loadLocale(){
-        SharedPreferences prefs= getActivity().getSharedPreferences("Settings",Context.MODE_PRIVATE);
-        String language=prefs.getString("Language","");
+
+    public void loadLocale() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        String language = prefs.getString("Language", "en");
+        Log.d("LAng",language);
         setLocale(language);
     }
 
