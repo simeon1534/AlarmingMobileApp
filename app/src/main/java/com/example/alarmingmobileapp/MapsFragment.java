@@ -1,5 +1,6 @@
 package com.example.alarmingmobileapp;
 
+import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
 import static androidx.core.app.ActivityCompat.recreate;
 
 
@@ -8,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -173,14 +175,11 @@ public class MapsFragment extends Fragment {
 
     };
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        loadLocale();
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         add_btn=rootView.findViewById(R.id.add_btn);
         toolbar = rootView.findViewById(R.id.toolbar);
@@ -248,12 +247,13 @@ public class MapsFragment extends Fragment {
         mBuilder.setSingleChoiceItems(langs, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
+                LanguageManager langManager=new LanguageManager(getActivity());
                 switch (i) {
                     case 0:
-                        setLocale("en");
+                        langManager.updateResource("en");
                         break;
                     case 1:
-                        setLocale("bg");
+                        langManager.updateResource("bg");
                         break;
                 }
                 getActivity().recreate();
@@ -262,28 +262,6 @@ public class MapsFragment extends Fragment {
         });
         AlertDialog mDialog = mBuilder.create();
         mDialog.show();
-    }
-
-    private void setLocale(String language) {
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-
-        Resources resources = getResources();
-        //getActivity().getApplicationContext().getResources().updateConfiguration(config,getActivity().getApplicationContext().getResources().getDisplayMetrics());
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE).edit();
-        editor.putString("Language", language);
-        editor.apply();
-    }
-
-    public void loadLocale() {
-        SharedPreferences prefs = getActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        String language = prefs.getString("Language", "en");
-        Log.d("LAng",language);
-        setLocale(language);
     }
 
 

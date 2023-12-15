@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
 
     private String currentFragmentTag = "mapFragment";
+
+
 
 
 
@@ -83,6 +86,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        onCreate(savedInstanceState);
+        //onCreate(savedInstanceState);
     }
+
+    private void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
+        invalidateOptionsMenu();
+        onConfigurationChanged(conf);//Add this line
+    }
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //Any other UI text to change
+    }
+
 }

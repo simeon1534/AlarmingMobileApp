@@ -63,6 +63,8 @@ public class LocationService extends Service {
 
     private boolean isInsideAnyMarker = false;
 
+    private LanguageManager languageManager;
+
 
     @Override
     public void onCreate() {
@@ -74,6 +76,8 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        languageManager=new LanguageManager(getApplicationContext());
+        languageManager.updateResource(languageManager.getLanguage());
         Intent locationPermIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         locationPermIntent.setData(Uri.parse("package:" + getPackageName()));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, locationPermIntent, PendingIntent.FLAG_IMMUTABLE);

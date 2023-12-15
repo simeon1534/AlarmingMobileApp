@@ -59,12 +59,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         requestRunTimePermissions();
-
-
         Button login_btn = findViewById(R.id.login_button);
         login_btn.setOnClickListener(v->requestRunTimePermissions());
-
-
     }
     private void requestRunTimePermissions(){
         if (ActivityCompat.checkSelfPermission(Login.this,Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
