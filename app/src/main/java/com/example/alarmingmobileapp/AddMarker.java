@@ -1,5 +1,6 @@
 package com.example.alarmingmobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -100,7 +101,7 @@ public class AddMarker extends Fragment {
                 }
                 saveMarkerData();
 
-                }
+            }
         });
         goBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,12 +127,8 @@ public class AddMarker extends Fragment {
             marker.setRadius(Integer.valueOf(radius.getText().toString()));
             DBClass.getDatabase(getActivity().getApplicationContext()).getDao().insertAllData(marker);
             Toast.makeText(getActivity(), R.string.data_inserted, Toast.LENGTH_SHORT).show();
-            Fragment mapFragment=new MapsFragment();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frame, mapFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            Intent i=new Intent(getActivity(),MainActivity.class);
+            startActivity(i);
         }
         catch (Error e){
             Toast.makeText(getActivity(),"Error: "+ e,Toast.LENGTH_SHORT).show();
