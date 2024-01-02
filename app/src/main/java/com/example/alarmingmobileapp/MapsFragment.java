@@ -1,37 +1,20 @@
 package com.example.alarmingmobileapp;
 
-import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
-import static androidx.core.app.ActivityCompat.recreate;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Application;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,9 +25,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
@@ -55,17 +35,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-
 import java.util.List;
-import java.util.Locale;
 
 
 public class MapsFragment extends Fragment {
@@ -88,6 +64,7 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
             mapView=getView();
+            updateMarkersList();
             LatLng sydney = new LatLng(43, 27);
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -105,22 +82,6 @@ public class MapsFragment extends Fragment {
             }
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            DaoClass markerDao = DBClass.getDatabase(getContext()).getDao();
-            List<MarkerModel> markers = markerDao.getAllData();
-            for (MarkerModel marker : markers) {
-                LatLng latLng = new LatLng(marker.getLatitude(), marker.getLongtitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(marker.getName());
-                Marker googleMarker = googleMap.addMarker(markerOptions);
-
-                CircleOptions circleOptions = new CircleOptions();
-                circleOptions.center(latLng)
-                        .radius(marker.getRadius())
-                        .strokeWidth(1)
-                        .strokeColor(Color.BLACK)
-                        .fillColor(Color.parseColor("#25FFFF00"));
-                Circle circle = googleMap.addCircle(circleOptions);
-            }
 
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
@@ -156,15 +117,8 @@ public class MapsFragment extends Fragment {
                     add_btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Fragment addMarkerFr = new AddMarker();
-                            Bundle args = new Bundle();
-                            args.putParcelable("cordinates", clickedMarker.getPosition());
-                            addMarkerFr.setArguments(args);
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame, addMarkerFr);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
+                            Intent intent=new Intent(getActivity(),AddMarkerActivity.class).putExtra("cordinates",clickedMarker.getPosition());
+                            startActivity(intent);
                         }
                     });
                 }
@@ -234,34 +188,29 @@ public class MapsFragment extends Fragment {
         if(id==R.id.terrain){
             map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         }
-        if(id==R.id.language){
-            changeLanguage();
-        }
         return true;
 
     }
-    private void changeLanguage() {
-        final String[] langs = {"English", "Български"};
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-        mBuilder.setTitle("Choose language");
-        mBuilder.setSingleChoiceItems(langs, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                LanguageManager langManager=new LanguageManager(getActivity());
-                switch (i) {
-                    case 0:
-                        langManager.updateResource("en");
-                        break;
-                    case 1:
-                        langManager.updateResource("bg");
-                        break;
-                }
-                getActivity().recreate();
-                dialog.dismiss();
-            }
-        });
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
+
+
+    public void updateMarkersList(){
+        map.clear();
+        DaoClass markerDao = DBClass.getDatabase(getContext()).getDao();
+        List<MarkerModel> markers = markerDao.getAllData();
+        for (MarkerModel marker : markers) {
+            LatLng latLng = new LatLng(marker.getLatitude(), marker.getLongtitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(marker.getName());
+            Marker googleMarker = map.addMarker(markerOptions);
+
+            CircleOptions circleOptions = new CircleOptions();
+            circleOptions.center(latLng)
+                    .radius(marker.getRadius())
+                    .strokeWidth(1)
+                    .strokeColor(Color.BLACK)
+                    .fillColor(Color.parseColor("#25FFFF00"));
+            Circle circle = map.addCircle(circleOptions);
+        }
     }
 
 

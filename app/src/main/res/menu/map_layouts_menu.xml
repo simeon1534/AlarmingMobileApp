@@ -18,10 +18,5 @@
         android:title="terrain"
         android:icon="@drawable/baseline_terrain_24"
         app:showAsAction="always"/>
-    <item
-        android:id="@+id/language"
-        android:title="language"
-        android:icon="@drawable/baseline_language_24"
-        app:showAsAction="always"/>
 
 </menu>

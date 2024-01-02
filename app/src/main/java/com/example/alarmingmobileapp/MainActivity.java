@@ -5,24 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ServiceInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
-
 import com.example.alarmingmobileapp.databinding.ActivityMainBinding;
-
-import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,16 +28,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         startService(new Intent(this,LocationService.class));
-        replaceFragment(new MapsFragment(),"maps");
+        replaceFragment(new MapsFragment());
         binding.bottomNavMenu.setBackground(null);
         binding.bottomNavMenu.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.map) {
-                replaceFragment(new MapsFragment(),"maps");
+                replaceFragment(new MapsFragment());
                 return true;
             }
             if (itemId == R.id.list) {
-                replaceFragment((new ListMarkers()),"list");
+                replaceFragment((new ListMarkers()));
                 return true;
             }
             if (itemId == R.id.logout) {
@@ -63,22 +49,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void replaceFragment(Fragment fragment,String tag) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        Fragment currentFragment = fragmentManager.findFragmentByTag(currentFragmentTag);
-        if (currentFragment != null) {
-            transaction.hide(currentFragment);
-        }
-        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
-        if (existingFragment != null) {
-            transaction.show(existingFragment);
-        } else {
-            transaction.add(R.id.frame, fragment, tag);
-        }
-        currentFragmentTag = tag;
-        transaction.addToBackStack(tag);
-        transaction.commit();
+    private void replaceFragment(Fragment fragment) {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//        Fragment currentFragment = fragmentManager.findFragmentByTag(currentFragmentTag);
+//        if (currentFragment != null) {
+//            transaction.hide(currentFragment);
+//        }
+//        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
+//        if (existingFragment != null) {
+//            transaction.show(existingFragment);
+//        } else {
+//            transaction.add(R.id.frame, fragment, tag);
+//        }
+//        currentFragmentTag = tag;
+//        transaction.addToBackStack(tag);
+//        transaction.commit();
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame,fragment);
+        fragmentTransaction.commit();
     }
 
 
@@ -89,22 +79,5 @@ public class MainActivity extends AppCompatActivity {
         //onCreate(savedInstanceState);
     }
 
-    private void setLocale(String lang) {
-        Locale myLocale = new Locale(lang);
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.locale = myLocale;
-        res.updateConfiguration(conf, dm);
-        getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
-        invalidateOptionsMenu();
-        onConfigurationChanged(conf);//Add this line
-    }
-
-    @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        //Any other UI text to change
-    }
 
 }

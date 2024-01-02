@@ -1,30 +1,18 @@
 package com.example.alarmingmobileapp;
 
-import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
-
 import java.util.List;
-import java.util.TooManyListenersException;
 
 
 public class ListMarkers extends Fragment {
@@ -40,6 +28,8 @@ public class ListMarkers extends Fragment {
 
     DaoClass markerDao=DBClass.getDatabase(getContext()).getDao();
     List<MarkerModel> markers=markerDao.getAllData();
+
+
 
 
 

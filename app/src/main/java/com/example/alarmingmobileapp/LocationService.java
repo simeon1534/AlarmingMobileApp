@@ -7,12 +7,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Binder;
@@ -23,13 +19,10 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.ServiceCompat;
-
 import com.example.alarmingmobileapp.DaoClass.DaoClass;
 import com.example.alarmingmobileapp.Models.MarkerModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,11 +30,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 
 public class LocationService extends Service {
@@ -49,8 +38,6 @@ public class LocationService extends Service {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback locationCallback;
-
-    private static final int LOCATION_REQUEST_CODE = 1001;
 
     private Handler handler = new Handler();
     private Runnable updateMarkersTask;
@@ -63,7 +50,6 @@ public class LocationService extends Service {
 
     private boolean isInsideAnyMarker = false;
 
-    private LanguageManager languageManager;
 
 
     @Override
@@ -76,8 +62,6 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        languageManager=new LanguageManager(getApplicationContext());
-        languageManager.updateResource(languageManager.getLanguage());
         Intent locationPermIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         locationPermIntent.setData(Uri.parse("package:" + getPackageName()));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, locationPermIntent, PendingIntent.FLAG_IMMUTABLE);
