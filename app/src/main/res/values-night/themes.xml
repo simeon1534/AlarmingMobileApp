@@ -4,6 +4,5 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="android:statusBarColor">@color/status</item>
-        <item name="android:state_selected">@color/secondary</item>
     </style>
 </resources>
